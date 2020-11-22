@@ -989,18 +989,17 @@ class Modmail(commands.Cog):
             if self.bot.config["dm_disabled"] in (DMDisabled.NEW_THREADS, DMDisabled.ALL_THREADS):
                 logger.info("Contacting user %s when Modmail DM is disabled.", user)
 
-            if not silent:
+            if not silent and not self.bot.config.get("thread_contact_silently"):
                 if ctx.author.id == user.id:
                     description = "You have opened a Modmail thread."
                 else:
                     description = f"{ctx.author.name} has opened a Modmail thread."
 
                 em = discord.Embed(
-                    title="New Thread",
-                    description=description,
-                    color=self.bot.main_color,
-                    timestamp=datetime.utcnow(),
+                    title="New Thread", description=description, color=self.bot.main_color,
                 )
+                if self.bot.config["show_timestamp"]:
+                    em.timestamp = datetime.utcnow()
                 em.set_footer(icon_url=ctx.author.avatar_url)
                 await user.send(embed=em)
 
@@ -1148,7 +1147,7 @@ class Modmail(commands.Cog):
     async def block(
         self,
         ctx,
-        user_or_role: Union[User, discord.Role] = None,
+        user_or_role: Optional[Union[User, discord.Role]] = None,
         *,
         after: UserFriendlyTime = None,
     ):

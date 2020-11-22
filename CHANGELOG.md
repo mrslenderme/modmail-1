@@ -6,6 +6,76 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 This project mostly adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html);
 however, insignificant breaking changes do not guarantee a major version bump, see the reasoning [here](https://github.com/kyb3r/modmail/issues/319). If you're a plugin developer, note the "BREAKING" section.
 
+# v3.7.12
+
+### Fixed
+
+- Bot was not responding to union errors.
+- `?block [reason]` now works in threads.
+
+# v3.7.11
+
+### Improved
+
+- Role block will now work better with seperate server setups.
+
+### Fixed
+
+- Bot not restarting after autoupdate on PM2.
+
+### Internal
+
+- Removed unnecessary loggings.
+
+# v3.7.10
+
+### Added
+
+- Added `update_channel_id` to specify which channel autoupdate notifications were being sent to.
+- Added `show_timestamp` to specify if timestamps should be displayed in message embeds. ([GH #2885](https://github.com/kyb3r/modmail/issues/2885))
+
+# v3.7.9
+
+### Fixed
+
+- `perms add/remove` with permission levels should now work again. ([GH #2892](https://github.com/kyb3r/modmail/issues/2892), [PR #2893](https://github.com/kyb3r/modmail/pull/2893))
+
+### Improved
+
+- Clearer plugin debug messages when plugins are disabled
+
+# v3.7.8
+
+### Added
+
+- Added `thread_contact_silently` to allow opening threads silently by default. ([PR #2887](https://github.com/kyb3r/modmail/pull/2887))
+
+### Fixed
+- Permission levels were not respected.
+- `perms remove` was not working.
+- `logs` and `block` would not recognise users in a seperate server setup.
+- Custom emojis were not working with `confirm_thread_creation`.
+
+### Internal
+- Optimised `perms get`, bot should respond faster now.
+
+# v3.7.7
+
+### Added
+
+- Added updating github fork if GITHUB_TOKEN was provided
+
+### Fixed
+
+- Skip blocked roles check if user is not in main guild.
+
+# v3.7.6
+
+### Fixed
+
+- Autoupdate persists despite errors.
+- Mention when normal thread created was not working. ([GH #2883](https://github.com/kyb3r/modmail/issues/2883))
+
 # v3.7.5
 
 ### Fixed
@@ -27,7 +97,6 @@ however, insignificant breaking changes do not guarantee a major version bump, s
 ### Fixed
 
 - `?config set` would not respond if an invalid key was provided.
-
 
 # v3.7.1
 

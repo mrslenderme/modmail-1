@@ -155,7 +155,7 @@ class Thread:
         await channel.edit(topic=f"User ID: {recipient.id}")
         self.ready = True
 
-        if creator != recipient:
+        if creator is not None and creator != recipient:
             mention = None
         else:
             mention = self.bot.config["mention"]
@@ -460,10 +460,10 @@ class Thread:
         # Thread closed message
 
         embed = discord.Embed(
-            title=self.bot.config["thread_close_title"],
-            color=self.bot.error_color,
-            timestamp=datetime.utcnow(),
+            title=self.bot.config["thread_close_title"], color=self.bot.error_color,
         )
+        if self.bot.config["show_timestamp"]:
+            embed.timestamp = datetime.utcnow()
 
         if not message:
             if self.id == closer.id:
@@ -663,22 +663,23 @@ class Thread:
         else:
             compare_url = None
 
-        async for linked_message in self.channel.history():
-            if not linked_message.embeds:
-                continue
-            url = linked_message.embeds[0].author.url
-            if not url:
-                continue
-            if url == compare_url:
-                return linked_message
+        if self.channel is not None:
+            async for linked_message in self.channel.history():
+                if not linked_message.embeds:
+                    continue
+                url = linked_message.embeds[0].author.url
+                if not url:
+                    continue
+                if url == compare_url:
+                    return linked_message
 
-            msg_id = url.split("#")[-1]
-            if not msg_id.isdigit():
-                continue
-            msg_id = int(msg_id)
-            if int(msg_id) == message.id:
-                return linked_message
-        raise ValueError("Thread channel message not found.")
+                msg_id = url.split("#")[-1]
+                if not msg_id.isdigit():
+                    continue
+                msg_id = int(msg_id)
+                if int(msg_id) == message.id:
+                    return linked_message
+            raise ValueError("Thread channel message not found.")
 
     async def edit_dm_message(self, message: discord.Message, content: str) -> None:
         try:
@@ -822,7 +823,9 @@ class Thread:
 
         author = message.author
 
-        embed = discord.Embed(description=message.content, timestamp=message.created_at)
+        embed = discord.Embed(description=message.content)
+        if self.bot.config["show_timestamp"]:
+            embed.timestamp = message.created_at
 
         system_avatar_url = "https://discordapp.com/assets/f78426a064bc9dd24847519259bc42af.png"
 
@@ -1181,7 +1184,7 @@ class ThreadManager:
                     check=lambda r, u: u.id == message.author.id
                     and r.message.id == confirm.id
                     and r.message.channel.id == confirm.channel.id
-                    and r.emoji in (accept_emoji, deny_emoji),
+                    and str(r.emoji) in (accept_emoji, deny_emoji),
                     timeout=20,
                 )
             except asyncio.TimeoutError:

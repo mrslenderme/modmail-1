@@ -185,6 +185,17 @@
       "See also: `log_channel_id`"
     ]
   },
+  "update_channel_id": {
+    "default": "Log Channel (normally `#bot-logs`)",
+    "description": "This is the channel where update notifications are sent to.",
+    "examples": [
+      "`{prefix}config set update_channel_id 9234932582312` (9234932582312 is the channel ID)"
+    ],
+    "notes": [
+      "This has no effect unless `disable_autoupdates` is set to no.",
+      "See also: `log_channel_id`"
+    ]
+  },
   "sent_emoji": {
     "default": "✅",
     "description": "This is the emoji added to the message when when a Modmail action is invoked successfully (ie. DM Modmail, edit message, etc.).",
@@ -301,6 +312,17 @@
     "notes": [
       "This is used in place of `thread_self_closable_creation_footer` when `recipient_thread_close` is enabled.",
       "See also: `thread_creation_title`, `thread_creation_response`, `thread_self_closable_creation_footer`, `thread_close_footer`."
+    ]
+  },
+  "thread_contact_silently": {
+    "default": "No",
+    "description": "Setting this configuration will always open a new thread silently in contact.",
+    "examples": [
+      "`{prefix}config set thread_contact_silently yes`",
+      "`{prefix}config set thread_contact_silently no`"
+    ],
+    "notes": [
+      "Works like `{prefix}contact <user> silent` for every new thread."
     ]
   },
   "thread_self_closable_creation_footer": {
@@ -637,6 +659,13 @@
       "See also: `mention`"
     ]
   },
+  "show_timestamp": {
+    "default": "Yes",
+    "description": "Shows timestamps on thread embeds",
+    "examples":[
+      "`{prefix}config set show_timestamp no`"
+    ]
+  },
   "confirm_thread_creation": {
     "default": "No",
     "description": "Ensure users confirm that they want to create a new thread",
@@ -644,7 +673,7 @@
       "`{prefix}config set confirm_thread_creation yes`"
     ],
     "notes": [
-      "See also: `confirm_thread_creation_title`, `confirm_thread_response`, `confirm_thread_creation_accept`, confirm_thread_creation_deny`"
+      "See also: `confirm_thread_creation_title`, `confirm_thread_response`, `confirm_thread_creation_accept`, `confirm_thread_creation_deny``"
     ]
   },
   "confirm_thread_creation_title": {
@@ -654,7 +683,7 @@
       "`{prefix}config set confirm_thread_creation_title Are you sure you want to create a new thread?`"
     ],
     "notes": [
-      "See also: `confirm_thread_creation`, `confirm_thread_response`, `confirm_thread_creation_accept`, confirm_thread_creation_deny`"
+      "See also: `confirm_thread_creation`, `confirm_thread_response`, `confirm_thread_creation_accept`, `confirm_thread_creation_deny`"
     ]
   },
   "confirm_thread_response": {
@@ -664,7 +693,7 @@
       "`{prefix}config set confirm_thread_response React to confirm`"
     ],
     "notes": [
-      "See also: `confirm_thread_creation`, `confirm_thread_creation_title`, `confirm_thread_creation_accept`, confirm_thread_creation_deny`"
+      "See also: `confirm_thread_creation`, `confirm_thread_creation_title`, `confirm_thread_creation_accept`, `confirm_thread_creation_deny`"
     ]
   },
   "confirm_thread_creation_accept": {
@@ -675,7 +704,7 @@
     ],
     "notes": [
       "This has no effect unless `confirm_thread_creation` is set",
-      "See also: `confirm_thread_creation`, `confirm_thread_creation_title`, `confirm_thread_response`, confirm_thread_creation_deny`"
+      "See also: `confirm_thread_creation`, `confirm_thread_creation_title`, `confirm_thread_response`, `confirm_thread_creation_deny`"
     ]
   },
   "confirm_thread_creation_deny": {
@@ -686,7 +715,7 @@
     ],
     "notes": [
       "This has no effect unless `confirm_thread_creation` is set",
-      "See also: `confirm_thread_creation`, `confirm_thread_creation_title`, `confirm_thread_response`, confirm_thread_creation_accept`"
+      "See also: `confirm_thread_creation`, `confirm_thread_creation_title`, `confirm_thread_response`, `confirm_thread_creation_accept`"
     ]
   },
   "use_regex_autotrigger": {

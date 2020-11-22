@@ -3,6 +3,7 @@ import inspect
 import os
 import random
 import re
+from sys import stdout
 import traceback
 from contextlib import redirect_stdout
 from datetime import datetime
@@ -344,7 +345,7 @@ class Utility(commands.Cog):
         embed.add_field(
             name="Want Modmail in Your Server?",
             value="Follow the installation guide on [GitHub](https://github.com/kyb3r/modmail/) "
-            "and join our [Discord server](https://discord.gg/F34cRU8/)!",
+            "and join our [Discord server](https://discord.gg/F34cRU8)!",
             inline=False,
         )
 
@@ -1495,23 +1496,23 @@ class Utility(commands.Cog):
         """
 
         if name is None and user_or_role not in {"command", "level", "override"}:
-            value = self._verify_user_or_role(user_or_role)
+            value = str(self._verify_user_or_role(user_or_role))
 
             cmds = []
             levels = []
 
             done = set()
+            command_permissions = self.bot.config["command_permissions"]
+            level_permissions = self.bot.config["level_permissions"]
             for command in self.bot.walk_commands():
                 if command not in done:
                     done.add(command)
-                    permissions = self.bot.config["command_permissions"].get(
-                        command.qualified_name, []
-                    )
+                    permissions = command_permissions.get(command.qualified_name, [])
                     if value in permissions:
                         cmds.append(command.qualified_name)
 
             for level in PermissionLevel:
-                permissions = self.bot.config["level_permissions"].get(level.name, [])
+                permissions = level_permissions.get(level.name, [])
                 if value in permissions:
                     levels.append(level.name)
 
@@ -1912,18 +1913,33 @@ class Utility(commands.Cog):
                         description="No further updates required",
                         color=self.bot.main_color,
                     )
+                    embed.set_footer(text="Force update")
                     embed.set_author(
                         name=user["username"], icon_url=user["avatar_url"], url=user["url"]
                     )
                 await ctx.send(embed=embed)
             else:
+                # update fork if gh_token exists
+                try:
+                    await self.bot.api.update_repository()
+                except InvalidConfigError:
+                    pass
+
                 command = "git pull"
 
                 proc = await asyncio.create_subprocess_shell(command, stderr=PIPE, stdout=PIPE,)
+                err = await proc.stderr.read()
+                err = err.decode("utf-8").rstrip()
                 res = await proc.stdout.read()
                 res = res.decode("utf-8").rstrip()
 
-                if res != "Already up to date.":
+                if err and not res:
+                    embed = discord.Embed(
+                        title="Update failed", description=err, color=self.bot.error_color
+                    )
+                    await ctx.send(embed=embed)
+
+                elif res != "Already up to date.":
                     logger.info("Bot has been updated.")
 
                     embed = discord.Embed(title="Bot has been updated", color=self.bot.main_color,)
@@ -1945,6 +1961,7 @@ class Utility(commands.Cog):
                     embed = discord.Embed(
                         title="Already up to date", description=desc, color=self.bot.main_color,
                     )
+                    embed.set_footer(text="Force update")
                     await ctx.send(embed=embed)
 
     @commands.command(hidden=True, name="eval")
